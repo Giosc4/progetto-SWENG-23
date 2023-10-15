@@ -1,12 +1,10 @@
 public class Carta {
     private String nome;
     private TipoCarta tipo;
-    private String rarita;
 
-    public Carta(String nome, TipoCarta tipo, String rarita) {
+    public Carta(String nome, TipoCarta tipo) {
         this.nome = nome;
         this.tipo = tipo;
-        this.rarita = rarita;
     }
 
     // Getters and setters for the attributes
@@ -25,14 +23,6 @@ public class Carta {
 
     public void setTipo(TipoCarta tipo) {
         this.tipo = tipo;
-    }
-
-    public String getRarita() {
-        return rarita;
-    }
-
-    public void setRarita(String rarita) {
-        this.rarita = rarita;
     }
 }
 
