@@ -1,10 +1,10 @@
 public class CartaPokemon extends Carta{
-    String illustrator, image, types, rarity;
+    String illustrator, image, types, rarity, description;
     private
     boolean isFirstEdition, isHolo, isNormal, isReverse, isWPromo;
 
     //costruttore
-    public CartaPokemon( String name,  String rarity, String illustrator, String image, boolean isFirstEdition, boolean isHolo, boolean isNormal, boolean isReverse, boolean isWPromo, String types) {
+    public CartaPokemon( String name,  String rarity, String illustrator, String image, boolean isFirstEdition, boolean isHolo, boolean isNormal, boolean isReverse, boolean isWPromo, String types, String description){
         super(name, TipoCarta.POKEMON);
         this.rarity = rarity;
         this.illustrator = illustrator;
@@ -15,6 +15,7 @@ public class CartaPokemon extends Carta{
         this.isReverse = isReverse;
         this.isWPromo = isWPromo;
         this.types = types;
+        this.description = description;
     }
 
     //metodo toString
@@ -31,6 +32,7 @@ public class CartaPokemon extends Carta{
                         "isReverse= " + isReverse + '\n' +
                         "isWPromo= " + isWPromo + '\n' +
                         "types= " + types + '\n' +
+                        "description= " + description + '\n' +
                         '}';
         return string;
     }
@@ -101,5 +103,13 @@ public class CartaPokemon extends Carta{
 
     public void setRarity(String rarity) {
         this.rarity = rarity;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
