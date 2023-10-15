@@ -14,7 +14,8 @@ public class CartaYuGiOh extends Carta{
     //metodo toString
     public String toString() {
         String string=
-                "name= " + getNome() + '\n' +
+                "Tipo Carta = " + TipoCarta.YU_GI_OH + '\n' +
+                        "name= " + getNome() + '\n' +
                         "type= " + type + '\n' +
                         "description= " + description + '\n' +
                         "race= " + race + '\n' +
