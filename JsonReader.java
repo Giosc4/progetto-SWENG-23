@@ -1,7 +1,10 @@
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -13,139 +16,102 @@ public class JsonReader {
         catalogo = new ArrayList<>();
     }
 
-    public  void memorizzaCarteYuGiOh(InputStream inputStream) {
-        JSONArray jsonArray = new JSONArray();
+    public void memorizzaCarteYuGiOh(InputStream inputStream) {
+        Gson gson = new Gson();
+        Scanner scanner = new Scanner(new InputStreamReader(inputStream)).useDelimiter("\\A");
 
-        //ArrayList di Carte YuGiOh
-        ArrayList<CartaYuGiOh> carteYuGiOh = new ArrayList<>();
-
-        Scanner scanner = new Scanner(inputStream).useDelimiter("\\A");
         if (scanner.hasNext()) {
             String jsonString = scanner.next();
 
-            // Crea un array JSON dalla stringa
-            jsonArray = new JSONArray(jsonString);
+            // Converte la stringa JSON in un array di oggetti JSON
+            JsonArray jsonArray = gson.fromJson(jsonString, JsonArray.class);
 
-            // Itera attraverso l'array JSON e stampa i dati
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject cardObject = jsonArray.getJSONObject(i);
+            // Itera attraverso l'array JSON e deserializza gli oggetti
+            for (JsonElement jsonElement : jsonArray) {
+                JsonObject cardObject = jsonElement.getAsJsonObject();
 
                 // Estrai i campi dal JSON
-                String name = cardObject.getString("name");
-                String type = cardObject.getString("type");
-                String description = cardObject.getString("desc");
-                String race = cardObject.getString("race");
-                String imageUrl = cardObject.getString("image_url");
-                String smallImageUrl = cardObject.getString("small_image_url");
+                String name = cardObject.get("name").getAsString();
+                String type = cardObject.get("type").getAsString();
+                String description = cardObject.get("desc").getAsString();
+                String race = cardObject.get("race").getAsString();
+                String imageUrl = cardObject.get("image_url").getAsString();
+                String smallImageUrl = cardObject.get("small_image_url").getAsString();
 
-                //crea la carta
-                CartaYuGiOh carta= new CartaYuGiOh(name, type, description, race, imageUrl, smallImageUrl);
-                carteYuGiOh.add(carta);
+                // Crea la carta e aggiungila al catalogo
+                CartaYuGiOh carta = new CartaYuGiOh(name, type, description, race, imageUrl, smallImageUrl);
                 catalogo.add(carta);
             }
         }
         scanner.close();
     }
 
-    public  void memorizzaCartePokemon(InputStream inputStream) {
-        JSONArray jsonArray = new JSONArray();
-        Scanner scanner = new Scanner(inputStream).useDelimiter("\\A");
-
-        //ArrayList di Carte YuGiOh
-        ArrayList<CartaPokemon> cartePokemon = new ArrayList<>();
+    public void memorizzaCartePokemon(InputStream inputStream) {
+        Gson gson = new Gson();
+        Scanner scanner = new Scanner(new InputStreamReader(inputStream)).useDelimiter("\\A");
 
         if (scanner.hasNext()) {
             String jsonString = scanner.next();
 
-            // Crea un array JSON dalla stringa
-            jsonArray = new JSONArray(jsonString);
+            // Converte la stringa JSON in un array di oggetti JSON
+            JsonArray jsonArray = gson.fromJson(jsonString, JsonArray.class);
 
-            // Itera attraverso l'array JSON e stampa i dati
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject cardObject = jsonArray.getJSONObject(i);
+            // Itera attraverso l'array JSON e deserializza gli oggetti
+            for (JsonElement jsonElement : jsonArray) {
+                JsonObject cardObject = jsonElement.getAsJsonObject();
 
                 // Estrai i campi dal JSON
-                String illustrator = cardObject.optString("illustrator", "N/A");
-                String image = cardObject.optString("image", "N/A");
-                String name = cardObject.optString("name", "N/A");
-                String rarity = cardObject.optString("rarity", "N/A");
-                String type = cardObject.optString("types", "N/A");
+                String illustrator = cardObject.has("illustrator") ? cardObject.get("illustrator").getAsString() : "N/A";
+                String image = cardObject.has("image") ? cardObject.get("image").getAsString() : "N/A";
+                String name = cardObject.has("name") ? cardObject.get("name").getAsString() : "N/A";
+                String rarity = cardObject.has("rarity") ? cardObject.get("rarity").getAsString() : "N/A";
+                String types = cardObject.has("types") ? cardObject.get("types").getAsString() : "N/A";
+                String description = cardObject.has("description") ? cardObject.get("description").getAsString() : "N/A";
 
                 // Estrai il sotto-oggetto 'variants' e i relativi campi solo se non è null
-                JSONObject variantsObject = cardObject.optJSONObject("variants");
-                boolean isFirstEdition= false;
-                boolean isHolo= false;
-                boolean isNormal= false;
-                boolean isReverse= false;
-                boolean isWPromo= false;
+                JsonObject variants = cardObject.getAsJsonObject("variants");
+                boolean isFirstEdition = variants.has("firstEdition") ? variants.get("firstEdition").getAsBoolean() : false;
+                boolean isHolo = variants.has("holo") ? variants.get("holo").getAsBoolean() : false;
+                boolean isNormal = variants.has("normal") ? variants.get("normal").getAsBoolean() : false;
+                boolean isReverse = variants.has("reverse") ? variants.get("reverse").getAsBoolean() : false;
+                boolean isWPromo = variants.has("wPromo") ? variants.get("wPromo").getAsBoolean() : false;
 
-                if (variantsObject != null) {
-                    isFirstEdition = variantsObject.optBoolean("firstEdition", false);
-                    isHolo = variantsObject.optBoolean("holo", false);
-                    isNormal = variantsObject.optBoolean("normal", false);
-                    isReverse = variantsObject.optBoolean("reverse", false);
-                    isWPromo = variantsObject.optBoolean("wPromo", false);
-                }
-
-                // Estrai la lista dei tipi della carta, se presente
-                JSONArray typesArray = cardObject.optJSONArray("types");
-                StringBuilder types = new StringBuilder();
-                if (typesArray != null) {
-                    for (int j = 0; j < typesArray.length(); j++) {
-                        types.append(typesArray.getString(j)).append(", ");
-                    }
-                    // Rimuovi l'ultima virgola e spazio dalla lista dei tipi
-                    if (types.length() > 2) {
-                        types.setLength(types.length() - 2);
-                    }
-                } else {
-                    types.append("N/A");
-                }
-
-                // Estrai la descrizione (se presente)
-                String description = cardObject.optString("description", "N/A");
-
-                //crea la carta
-                CartaPokemon carta= new CartaPokemon(illustrator, image, name, rarity, isFirstEdition, isHolo, isNormal, isReverse, isWPromo, type, description);
-                cartePokemon.add(carta);
+                // Crea la carta e aggiungila al catalogo
+                CartaPokemon carta = new CartaPokemon(name, rarity, illustrator, image, isFirstEdition, isHolo, isNormal, isReverse, isWPromo, types, description);
                 catalogo.add(carta);
             }
         }
         scanner.close();
     }
 
-    public  void memorizzaCarteMagic(InputStream inputStream) {
-        JSONArray jsonArray = new JSONArray();
-        Scanner scanner = new Scanner(inputStream).useDelimiter("\\A");
-
-        //ArrayList di Carte Magic
-        ArrayList<CartaMagic> carteMagic = new ArrayList<>();
+    public void memorizzaCarteMagic(InputStream inputStream) {
+        Gson gson = new Gson();
+        Scanner scanner = new Scanner(new InputStreamReader(inputStream)).useDelimiter("\\A");
 
         if (scanner.hasNext()) {
             String jsonString = scanner.next();
 
-            // Crea un array JSON dalla stringa
-            jsonArray = new JSONArray(jsonString);
+            // Converte la stringa JSON in un array di oggetti JSON
+            JsonArray jsonArray = gson.fromJson(jsonString, JsonArray.class);
 
-            // Itera attraverso l'array JSON e stampa i dati
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject cardObject = jsonArray.getJSONObject(i);
+            // Itera attraverso l'array JSON e deserializza gli oggetti
+            for (JsonElement jsonElement : jsonArray) {
+                JsonObject cardObject = jsonElement.getAsJsonObject();
 
                 // Estrai i campi dal JSON
-                String artist = cardObject.getString("artist");
-                String name = cardObject.getString("name");
-                String text = cardObject.getString("text");
-                String types = cardObject.getString("types");
-                String rarity = cardObject.getString("rarity");
-                boolean hasFoil = Boolean.parseBoolean(cardObject.getString("hasFoil"));
-                boolean isAlternative = Boolean.parseBoolean(cardObject.getString("isAlternative"));
-                boolean isFullArt = Boolean.parseBoolean(cardObject.getString("isFullArt"));
-                boolean isPromo = Boolean.parseBoolean(cardObject.getString("isPromo"));
-                boolean isReprint = Boolean.parseBoolean(cardObject.getString("isReprint"));
+                String artist = cardObject.get("artist").getAsString();
+                String name = cardObject.get("name").getAsString();
+                String text = cardObject.get("text").getAsString();
+                String types = cardObject.get("types").getAsString();
+                String rarity = cardObject.get("rarity").getAsString();
+                boolean hasFoil = cardObject.get("hasFoil").getAsBoolean();
+                boolean isAlternative = cardObject.get("isAlternative").getAsBoolean();
+                boolean isFullArt = cardObject.get("isFullArt").getAsBoolean();
+                boolean isPromo = cardObject.get("isPromo").getAsBoolean();
+                boolean isReprint = cardObject.get("isReprint").getAsBoolean();
 
-                //crea la carta
-                CartaMagic carta= new CartaMagic(artist, name, text, types, rarity, hasFoil, isAlternative, isFullArt, isPromo, isReprint);
-                carteMagic.add(carta);
+                // Crea la carta e aggiungila al catalogo
+                CartaMagic carta = new CartaMagic(name, rarity, artist, text, types, hasFoil, isAlternative, isFullArt, isPromo, isReprint);
                 catalogo.add(carta);
             }
         }
@@ -155,16 +121,13 @@ public class JsonReader {
     //stampa il catalogo delle carte
     public void stampaCatalogo(ArrayList<Carta> catalogo) {
         for (int i = 0; i < catalogo.size(); i++) {
-            System.out.println("Carta numero: " + (i+1) + '\n' + "{ " + '\n' + catalogo.get(i).toString());
+            System.out.println("Carta numero: " + (i + 1) + '\n' + "{ " + '\n' + catalogo.get(i).toString());
             System.out.println("---------------------------------");
         }
     }
 
     //ricevi il catalogo delle carte
     public ArrayList<Carta> getCatalogo() {
-        for (int i = 0; i < catalogo.size(); i++) {
-            catalogo.get(i);
-        }
         return catalogo;
     }
 }
