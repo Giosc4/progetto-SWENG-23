@@ -3,19 +3,17 @@ package com.project.sweng.Json;
 import java.io.Serializable;
 
 public class MagicCard extends Carta implements Serializable {
-    private String artist;
-    private String text;
-    private int hasFoil;
-    private int isAlternative;
-    private int isFullArt;
-    private int isPromo;
-    private int isReprint;
+    String artist, text, rarity, type;
+    Boolean hasFoil, isAlternative, isFullArt, isPromo, isReprint;
 
-    public MagicCard(String name, String type, String rarity, String artist, String text, int hasFoil,
-            int isAlternative, int isFullArt, int isPromo, int isReprint) {
-        super(name, type, rarity);
+    // costruttore
+    public MagicCard(String name, String rarity, String artist, String text, String type, Boolean hasFoil,
+            Boolean isAlternative, Boolean isFullArt, Boolean isPromo, Boolean isReprint) {
+        super(name, TipoCarta.MAGIC);
+        this.rarity = rarity;
         this.artist = artist;
         this.text = text;
+        this.type = type;
         this.hasFoil = hasFoil;
         this.isAlternative = isAlternative;
         this.isFullArt = isFullArt;
@@ -23,8 +21,24 @@ public class MagicCard extends Carta implements Serializable {
         this.isReprint = isReprint;
     }
 
-    // Metodi getter e setter per le variabili di istanza
+    // metodo toString
+    public String toString() {
+        String string = "Tipo Carta = " + TipoCarta.MAGIC + '\n' +
+                "artist= " + artist + '\n' +
+                "name= " + getNome() + '\n' +
+                "text= " + text + '\n' +
+                "types= " + type + '\n' +
+                "rarity= " + rarity + '\n' +
+                "hasFoil= " + hasFoil + '\n' +
+                "isAlternative= " + isAlternative + '\n' +
+                "isFullArt= " + isFullArt + '\n' +
+                "isPromo= " + isPromo + '\n' +
+                "isReprint= " + isReprint + '\n' +
+                '}';
+        return string;
+    }
 
+    // metodi Getter e Setter
     public String getArtist() {
         return artist;
     }
@@ -41,54 +55,59 @@ public class MagicCard extends Carta implements Serializable {
         this.text = text;
     }
 
-    public int getHasFoil() {
+    public String getTypes() {
+        return type;
+    }
+
+    public void setTypes(String type) {
+        this.type = type;
+    }
+
+    public Boolean getHasFoil() {
         return hasFoil;
     }
 
-    public void setHasFoil(int hasFoil) {
+    public void setHasFoil(Boolean hasFoil) {
         this.hasFoil = hasFoil;
     }
 
-    public int getIsAlternative() {
+    public Boolean getIsAlternative() {
         return isAlternative;
     }
 
-    public void setIsAlternative(int isAlternative) {
+    public void setIsAlternative(Boolean isAlternative) {
         this.isAlternative = isAlternative;
     }
 
-    public int getIsFullArt() {
+    public Boolean getIsFullArt() {
         return isFullArt;
     }
 
-    public void setIsFullArt(int isFullArt) {
+    public void setIsFullArt(Boolean isFullArt) {
         this.isFullArt = isFullArt;
     }
 
-    public int getIsPromo() {
+    public Boolean getIsPromo() {
         return isPromo;
     }
 
-    public void setIsPromo(int isPromo) {
+    public void setIsPromo(Boolean isPromo) {
         this.isPromo = isPromo;
     }
 
-    public int getIsReprint() {
+    public Boolean getIsReprint() {
         return isReprint;
     }
 
-    public void setIsReprint(int isReprint) {
+    public void setIsReprint(Boolean isReprint) {
         this.isReprint = isReprint;
     }
 
-    @Override
-    public String toString() {
-        String str = "MagicCard [name=" + getName() + ", type=" + getType() + ", rarity=" + getRarity()
-                + ", artist=" + artist + ", text=" + text + ", hasFoil=" + hasFoil
-                + ", isAlternative=" + isAlternative + ", isFullArt=" + isFullArt
-                + ", isPromo=" + isPromo + ", isReprint=" + isReprint + "]";
-
-        return str;
+    public String getRarity() {
+        return rarity;
     }
 
+    public void setRarity(String rarity) {
+        this.rarity = rarity;
+    }
 }

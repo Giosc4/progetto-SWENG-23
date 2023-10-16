@@ -1,49 +1,35 @@
 package com.project.sweng.Json;
 
-public abstract class Carta {
-    private String name;
-    private String type;
-    private String rarity;
+public class Carta {
+    private String nome;
+    private TipoCarta tipo;
 
-    public Carta(String name, String type, String rarity) {
-
-        this.name = name;
-        this.type = type;
-        this.rarity = rarity;
+    public Carta(String nome, TipoCarta tipo) {
+        this.nome = nome;
+        this.tipo = tipo;
     }
 
-    // Metodi getter e setter per le variabili di istanza
+    // Getters and setters for the attributes
 
-    public String getName() {
-        return name;
+    public String getNome() {
+        return nome;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
-    public String getType() {
-        return type;
+    public TipoCarta getTipo() {
+        return tipo;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setTipo(TipoCarta tipo) {
+        this.tipo = tipo;
     }
+}
 
-    public String getRarity() {
-        return rarity;
-    }
-
-    public void setRarity(String rarity) {
-        this.rarity = rarity;
-    }
-
-    @Override
-    public String toString() {
-        return "Carta [name=" + name + ", type=" + type + ", rarity=" + rarity + "]";
-    }
-
-    
-
-    
+enum TipoCarta {
+    YU_GI_OH,
+    MAGIC,
+    POKEMON
 }
